@@ -1,0 +1,9 @@
+users:
+  - USER: "Jerry"
+    GROUP: "Jgroup"
+    PASSWORD: "123456"
+
+  - USER: "Jenny"
+    GROUP: "Jgroup"
+    PASSWORD: "123456"
+
