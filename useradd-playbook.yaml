@@ -1,0 +1,33 @@
+- name: User add
+  hosts:
+    - "{{ HOSTS }}"
+  become: yes
+  tasks:
+    - block:
+        - name: "User Add {{ item.USER }}"
+          ansible.builtin.user:
+            name: "{{ item.USER }}"
+            group: "{{ item.GROUP }}"
+          loop: "{{ users }}"
+          notify: set_passwd
+
+      rescue:
+        - name: "Create group {{ item.GROUP }}"
+          ansible.builtin.group:
+            name: "{{ item.GROUP }}"
+            state: present
+          loop: "{{ users }}"
+
+        - name: "User Add {{ item.USER }}"
+          ansible.builtin.user:
+            name: "{{ item.USER }}"
+            group: "{{ item.GROUP }}"
+          loop: "{{ users }}"
+          notify: set_passwd
+
+  handlers:
+    - name: set_passwd
+      ansible.builtin.user:
+        name: "{{ item.USER }}"
+        password: "{{ item.PASSWORD | password_hash('sha512') }}"
+      loop: "{{ users }}"
